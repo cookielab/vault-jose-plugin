@@ -5,4 +5,4 @@ vendor.orig/
 build/jose-plugin
 build/jose-plugin.sha
 
-smoke/bin
+smoke/bindist/
