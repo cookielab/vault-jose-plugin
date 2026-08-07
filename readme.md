@@ -112,7 +112,10 @@ everything.
 ## Tools
 
 - `./build.sh` builds the plugin and writes its SHA-256 next to it
+- `./docker.sh` builds a Vault image with the plugin already registered and runs
+  it in dev mode on port 8200 with a root token of `root`
 - `./smoke/smoke.sh` builds, installs into Vault and exercises signing
 
-The `dockerfile` and `docker.sh` in this repository predate the fork and still
-reference Go 1.11, `dep` and Vault 0.11.1. They are not used by the build above.
+Note that the dev image puts only the binary in the plugin directory. Vault's
+`-dev-plugin-dir` tries to register every file it finds there, so a stray `.sha`
+alongside it aborts startup.
