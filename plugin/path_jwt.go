@@ -46,6 +46,11 @@ func pathJWT(backend *JwtBackend) []*framework.Path {
 		&framework.Path{
 			Pattern: fmt.Sprintf("jwt/issue/%s", framework.GenericNameRegex("role")),
 			Fields:  createTokenSchema,
+			// Issuing is an action rather than a resource, so a write is always
+			// a create as far as the framework is concerned.
+			ExistenceCheck: func(ctx context.Context, req *logical.Request, data *framework.FieldData) (bool, error) {
+				return false, nil
+			},
 			Callbacks: map[logical.Operation]framework.OperationFunc{
 				logical.ReadOperation:   backend.pathJwtIssue,
 				logical.CreateOperation: backend.pathJwtIssue,
@@ -55,6 +60,9 @@ func pathJWT(backend *JwtBackend) []*framework.Path {
 		&framework.Path{
 			Pattern: fmt.Sprintf("jwt/validate/%s", framework.GenericNameRegex("role")),
 			Fields:  validateTokenSchema,
+			ExistenceCheck: func(ctx context.Context, req *logical.Request, data *framework.FieldData) (bool, error) {
+				return false, nil
+			},
 			Callbacks: map[logical.Operation]framework.OperationFunc{
 				logical.CreateOperation: backend.pathJwtValidate,
 				logical.UpdateOperation: backend.pathJwtValidate,
@@ -85,7 +93,7 @@ func (backend *JwtBackend) pathJwtIssue(ctx context.Context, req *logical.Reques
 
 	keySetEntry, err := backend.getKeySetEntry(ctx, req.Storage, roleEntry.KeySet)
 	if keySetEntry == nil || err != nil {
-		err = fmt.Errorf(fmt.Sprintf("key set %q for role name %q not recognized", roleEntry.KeySet, tokenEntry.Role))
+		err = fmt.Errorf("key set %q for role name %q not recognized", roleEntry.KeySet, tokenEntry.Role)
 		return logical.ErrorResponse(err.Error()), err
 	}
 
@@ -139,7 +147,7 @@ func (backend *JwtBackend) pathJwtValidate(ctx context.Context, req *logical.Req
 
 	keySetEntry, err := backend.getKeySetEntry(ctx, req.Storage, roleEntry.KeySet)
 	if keySetEntry == nil || err != nil {
-		err = fmt.Errorf(fmt.Sprintf("key set %q for role name %q not recognized", roleEntry.KeySet, roleName))
+		err = fmt.Errorf("key set %q for role name %q not recognized", roleEntry.KeySet, roleName)
 		return logical.ErrorResponse(err.Error()), err
 	}
 

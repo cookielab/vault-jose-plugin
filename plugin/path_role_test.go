@@ -10,8 +10,8 @@ import (
 	. "github.com/naveego/vault-jose-plugin/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/json"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/json"
 )
 
 var _ = Describe("PathRole", func() {

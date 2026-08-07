@@ -5,14 +5,11 @@ import (
 	"fmt"
 	"path"
 
-	"gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/json"
+	"github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/json"
 
 	"github.com/hashicorp/vault/sdk/logical"
 	logicaltest "github.com/hashicorp/vault/helper/testhelpers/logical"
-
-	// hold on to reference so dep doesn't lose it
-	_ "github.com/SAP/go-hdb/driver"
 
 	. "github.com/onsi/ginkgo"
 )

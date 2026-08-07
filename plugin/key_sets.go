@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"golang.org/x/crypto/ed25519"
-	jose "gopkg.in/square/go-jose.v2"
+	jose "github.com/go-jose/go-jose/v4"
 
 	"github.com/hashicorp/vault/sdk/logical"
 )
@@ -304,4 +304,19 @@ func LoadPrivateKey(data []byte) (interface{}, error) {
 	}
 
 	return nil, fmt.Errorf("parse error, got '%s', '%s', and '%s'", err0, err1, err2)
+}
+
+// signatureAlgorithms returns the distinct signature algorithms declared by the
+// keys in this key set, for use when parsing a token.
+func (keySet *KeySetStorageEntry) signatureAlgorithms() []jose.SignatureAlgorithm {
+	seen := map[string]bool{}
+	algorithms := []jose.SignatureAlgorithm{}
+	for _, key := range keySet.Keys {
+		if key.Algorithm == "" || seen[key.Algorithm] {
+			continue
+		}
+		seen[key.Algorithm] = true
+		algorithms = append(algorithms, jose.SignatureAlgorithm(key.Algorithm))
+	}
+	return algorithms
 }

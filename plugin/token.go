@@ -7,8 +7,8 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/google/uuid"
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 )
 
 // TokenCreateEntry is the exposed structure for creating a token
@@ -31,7 +31,12 @@ func (t TokenCreateEntry) ToMap() map[string]interface{} {
 // ValidateJWTToken will return an error if the token is not valid based on the role and the key.
 func ValidateJWTToken(serializedToken string, roleEntry RoleStorageEntry, keySet *KeySetStorageEntry) error {
 
-	token, err := jwt.ParseSigned(serializedToken)
+	allowedAlgorithms := keySet.signatureAlgorithms()
+	if len(allowedAlgorithms) == 0 {
+		return errors.New("key set declares no signature algorithms")
+	}
+
+	token, err := jwt.ParseSigned(serializedToken, allowedAlgorithms)
 	if err != nil {
 		return err
 	}
@@ -72,7 +77,7 @@ func ValidateJWTToken(serializedToken string, roleEntry RoleStorageEntry, keySet
 	}
 
 	if roleEntry.Audience != "" {
-		expected.Audience = []string{roleEntry.Audience}
+		expected.AnyAudience = jwt.Audience{roleEntry.Audience}
 	}
 
 	err = claims.Validate(expected)
@@ -145,7 +150,7 @@ func CreateJWTToken(createEntry TokenCreateEntry, roleEntry RoleStorageEntry, ke
 		}
 	}
 
-	raw, err := jwt.Signed(sig).Claims(claims).Claims(privateClaims).CompactSerialize()
+	raw, err := jwt.Signed(sig).Claims(claims).Claims(privateClaims).Serialize()
 	return []byte(raw), err
 }
 

@@ -3,8 +3,8 @@ package josejwt_test
 import (
 	"time"
 
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/jwt"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/jwt"
 
 	//. "github.com/onsi/ginkgo/extensions/table"
 

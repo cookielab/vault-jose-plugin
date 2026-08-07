@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/vault/sdk/framework"
 
-	"gopkg.in/square/go-jose.v2"
+	"github.com/go-jose/go-jose/v4"
 
 	"github.com/hashicorp/vault/sdk/logical"
 )

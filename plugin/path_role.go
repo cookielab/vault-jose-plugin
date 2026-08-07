@@ -74,6 +74,10 @@ func pathRole(backend *JwtBackend) []*framework.Path {
 			HelpSynopsis: "CRUD operations on roles. Roles define how tokens can be generated from keys.",
 			HelpDescription: `When a role name is passed to the jwt/issue endpoint, a token will be created using the 
 claims and TTL settings of that role.`,
+			ExistenceCheck: func(ctx context.Context, req *logical.Request, data *framework.FieldData) (bool, error) {
+				role, err := backend.getRoleEntry(ctx, req.Storage, data.Get("name").(string))
+				return role != nil, err
+			},
 			Callbacks: map[logical.Operation]framework.OperationFunc{
 				logical.CreateOperation: backend.createRole,
 				logical.UpdateOperation: backend.createRole,
@@ -100,7 +104,7 @@ func (backend *JwtBackend) pathReadRoleJWKS(ctx context.Context, req *logical.Re
 
 	keySetEntry, err := backend.getKeySetEntry(ctx, req.Storage, role.KeySet)
 	if keySetEntry == nil || err != nil {
-		err = fmt.Errorf(fmt.Sprintf("key set %q for role name %q not recognized", role.KeySet, roleName))
+		err = fmt.Errorf("key set %q for role name %q not recognized", role.KeySet, roleName)
 		return logical.ErrorResponse(err.Error()), err
 	}
 

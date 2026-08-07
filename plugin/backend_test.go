@@ -10,11 +10,8 @@ import (
 	"github.com/hashicorp/vault/sdk/logical"
 	logicaltest "github.com/hashicorp/vault/helper/testhelpers/logical"
 
-	jose "gopkg.in/square/go-jose.v2"
-	"gopkg.in/square/go-jose.v2/json"
-
-	// hold on to reference so dep doesn't lose it
-	_ "github.com/SAP/go-hdb/driver"
+	jose "github.com/go-jose/go-jose/v4"
+	"github.com/go-jose/go-jose/v4/json"
 
 	"github.com/naveego/vault-jose-plugin/plugin"
 	. "github.com/onsi/ginkgo"
