@@ -157,11 +157,11 @@ func (backend *JwtBackend) setKeySetEntry(ctx context.Context, storage logical.S
 
 	entry, err := logical.StorageEntryJSON(fmt.Sprintf("keyset/%s", name), keySet)
 	if err != nil {
-		return fmt.Errorf("error converting key to JSON: %s", err)
+		return fmt.Errorf("error encoding key set: %w", err)
 	}
 
 	if err := storage.Put(ctx, entry); err != nil {
-		return fmt.Errorf("error saving key: %#v", err)
+		return fmt.Errorf("error saving key set: %w", err)
 	}
 
 	return nil

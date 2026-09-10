@@ -65,11 +65,11 @@ func (backend *JwtBackend) setRoleEntry(ctx context.Context, storage logical.Sto
 	entry, err := logical.StorageEntryJSON(fmt.Sprintf("role/%s", roleName), role)
 
 	if err != nil {
-		return fmt.Errorf("Error converting entry to JSON: %#v", err)
+		return fmt.Errorf("error encoding role: %w", err)
 	}
 
 	if err := storage.Put(ctx, entry); err != nil {
-		return fmt.Errorf("Error saving role: %#v", err)
+		return fmt.Errorf("error saving role: %w", err)
 	}
 
 	return nil

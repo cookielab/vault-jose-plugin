@@ -56,6 +56,17 @@ vault secrets enable -path=jwt-issuer jose-plugin
 
 See also https://developer.hashicorp.com/vault/docs/plugins.
 
+## Save-error diagnostics
+
+Version 2.0.1 preserves wrapped storage errors and logs key-set and role save
+failures at error level. Save failures return the underlying error instead of
+masking it with a generic logical error response. Logs do not include role
+payloads or signing keys.
+
+When upgrading an existing installation, deploy the new binary, update its
+SHA-256 in the Vault plugin catalog, and reload the plugin. Existing keys and
+roles do not need to be recreated.
+
 ## Usage
 
 Create a key set with one key in it. The first path segment names the key set,

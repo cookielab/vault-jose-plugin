@@ -240,7 +240,8 @@ func (backend *JwtBackend) createRole(ctx context.Context, req *logical.Request,
 	role.NotBefore = getBoolOrDefault(data, "nbf", true)
 
 	if err := backend.setRoleEntry(ctx, req.Storage, *role); err != nil {
-		return logical.ErrorResponse("Error saving role"), err
+		backend.Logger().Error("error saving role", "error", err)
+		return nil, err
 	}
 
 	roleDetails := map[string]interface{}{

@@ -193,7 +193,8 @@ func (backend *JwtBackend) pathCreateUpdateKeySet(ctx context.Context, req *logi
 	}
 
 	if err := backend.setKeySetEntry(ctx, req.Storage, key); err != nil {
-		return logical.ErrorResponse("error saving key set"), err
+		backend.Logger().Error("error saving key set", "error", err)
+		return nil, err
 	}
 
 	return &logical.Response{Data: key.ToMap()}, nil
@@ -376,7 +377,8 @@ func (backend *JwtBackend) pathAddKeyToKeySet(ctx context.Context, req *logical.
 	}
 
 	if err := backend.setKeySetEntry(ctx, req.Storage, keySet); err != nil {
-		return logical.ErrorResponse("error saving key set"), err
+		backend.Logger().Error("error saving key set", "error", err)
+		return nil, err
 	}
 
 	return &logical.Response{
@@ -401,7 +403,8 @@ func (backend *JwtBackend) pathDeleteKeyFromKeySet(ctx context.Context, req *log
 	key.RemoveKey(kid)
 
 	if err := backend.setKeySetEntry(ctx, req.Storage, key); err != nil {
-		return logical.ErrorResponse("error saving key set"), err
+		backend.Logger().Error("error saving key set", "error", err)
+		return nil, err
 	}
 
 	return &logical.Response{Data: key.ToMap()}, nil
